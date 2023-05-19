@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useQuery, gql } from "@apollo/client";
+import { useNavigate } from 'react-router-dom';
+//
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,50 +16,62 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-return (
-    <Typography variant="body2" color="#1dbf73" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
-        Your Website
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-    </Typography>
-);
-}
-
+import Alert from '@mui/material/Alert';
 
 
 const defaultTheme = createTheme();
-
+const LOGIN_QUERY = gql`
+    query LoginQuery($email: String!, $password: String!) {
+        userLogin(email: $email, password: $password) {
+            password
+            email
+    }
+    }
+`;
 function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [verified, setVerified] = useState(false); 
+    const { error, loading, data } = useQuery(LOGIN_QUERY, {
+        variables: { email, password },
+        skip: !email || !password, // Skip the query if email or password is not provided
+    });
+    const navigate = useNavigate();
     const handleSubmit = (event) => {
-    event.preventDefault();
+        event.preventDefault();
+        if (!loading && data?.userLogin?.password === password && data?.userLogin?.email === email) {
+            localStorage.setItem("currentUser",JSON.stringify(data.userLogin));
+            console.log(JSON.parse(localStorage.getItem("currentUser")).email)
+        navigate("/Pfrelancer");
+        } else {
+        setVerified(true);
+        console.log(error);
+        }
     };
 
-    return (
+return (
     <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-            sx={{
+        <Box sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             top: '400px',
             position: 'relative'
-            }}
-        >
-        <Avatar sx={{ m: 1, bgcolor: 'green' }}>
-            <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
+        }}>
+            <Avatar sx={{ m: 1, bgcolor: 'green' }}>
+                <LockOutlinedIcon />
+            </Avatar>
+            <Grid spacing={2}>
+                {verified && <Alert severity="error">Password or Email is false</Alert>}
+            </Grid>
+            
+            <Typography component="h1" variant="h5">
             Login
-        </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                 <TextField
@@ -65,9 +81,10 @@ function Login() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    onChange={(e) => { setEmail(e.target.value) }}
                 />
-            </Grid>
-            <Grid item xs={12}>
+                </Grid>
+                <Grid item xs={12}>
                 <TextField
                     required
                     fullWidth
@@ -76,8 +93,9 @@ function Login() {
                     type="password"
                     id="password"
                     autoComplete="new-password"
+                    onChange={(e) => { setPassword(e.target.value) }}
                 />
-            </Grid>
+                </Grid>
                 <Grid item xs={12}>
                 <FormControlLabel
                     control={<Checkbox value="allowExtraEmails" color="primary" />}
@@ -89,17 +107,29 @@ function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 ,bgcolor: 'green',color: "white",'&:hover': { bgcolor: 'darkgreen',},}}
+                sx={{
+                    mt: 3,
+                    mb: 2,
+                    bgcolor: 'green',
+                    color: "white",
+                    '&:hover': { bgcolor: 'darkgreen' },
+                }}
             >
                 Login
             </Button>
-            <Copyright sx={{ mt: 5 }} />
+            <Typography variant="body2" color="#1dbf73" align="center">
+                {'Copyright © '}
+                <Link color="inherit" href="https://mui.com/">
+                Your Website
+                </Link>{' '}
+                {new Date().getFullYear()}
+                {'.'}
+                    </Typography>
+                </Box>
             </Box>
-        </Box>
-    </Container>
+        </Container>
     </ThemeProvider>
-);
-}
+    );
+    }
 
 export default Login;
-
