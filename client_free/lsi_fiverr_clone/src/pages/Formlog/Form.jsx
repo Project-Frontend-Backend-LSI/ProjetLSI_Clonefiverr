@@ -6,7 +6,10 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Avatar } from '@material-ui/core';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
+//import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Input from '@mui/material/Input';
 import IconButton from '@mui/material/IconButton';
@@ -67,8 +70,13 @@ function Form() {
     }
 
 return (
-    <div className="formContainer" style={{position:'absolute',left:'450px', display: 'flex', justifyContent: 'center', alignItems: 'center' ,width:'700px'}}>
+    <div className="formContainer" style={{position:'absolute',left:'450px', display: 'flex', justifyContent: 'center', alignItems: 'center' ,width:'700px', top:"400px"}}>
+            <Avatar sx={{ m: 1, bgcolor: 'green', }} style={{position:'absolute',left:'330px', display: 'flex', justifyContent: 'center', alignItems: 'center' , top:"-150px",backgroundColor:"green"}}>
+            <LockOutlinedIcon />
+            </Avatar>
         <Box sx={{ flexGrow: 1 }}>
+        <Grid container spacing={6} justifyContent="center" alignItems="center">
+        </Grid>
             <Grid container spacing={6} justifyContent="center" alignItems="center">
                 <Grid item xs={12} md={6}>
                     <TextField
