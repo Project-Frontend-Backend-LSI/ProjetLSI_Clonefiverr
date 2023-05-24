@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState} from 'react';
 import { useQuery, gql } from "@apollo/client";
 import { useNavigate } from 'react-router-dom';
 //
@@ -28,6 +28,7 @@ const LOGIN_QUERY = gql`
     }
     }
 `;
+//console.log(JSON.parse(localStorage.getItem("currentUser")).email);
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -40,9 +41,8 @@ function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (!loading && data?.userLogin?.password === password && data?.userLogin?.email === email) {
-            localStorage.setItem("currentUser",JSON.stringify(data.userLogin));
-            console.log(JSON.parse(localStorage.getItem("currentUser")).email)
-        navigate("/Pfrelancer");
+            localStorage.setItem("currentUser", JSON.stringify(data.userLogin));
+            navigate("/Pfrelancer");
         } else {
         setVerified(true);
         console.log(error);
