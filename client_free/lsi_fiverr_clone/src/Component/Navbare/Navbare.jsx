@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "white",
         color: "black",
     },
-    },
+},
     menu: {
     display: "flex",
     flexDirection: "row",
@@ -73,6 +73,14 @@ function Navbare() {
     const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
     };
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    console.log(currentUser);
+    const handleLogout = async () => {
+        localStorage.setItem("currentUser", null);
+        navigate("/");
+    };
   
     useEffect(() => {
       window.addEventListener("scroll", isActive);
@@ -88,12 +96,28 @@ function Navbare() {
           <Typography variant="h1" className={classes.logo}>
             fiverr<span style={{ color: "green" }}>.</span>
           </Typography>
-          <div className={classes.navlinks}>
+          {/* <Link to="/" className={`${classes.links} ${pathname === "/Pfrelancer" && "active"}`}>
+            Fiverr Business
+            </Link> */}
+            <Link to="/" className={`${classes.links} ${pathname === "/Pfrelancer" && "active"}`}>
+            Explore
+            </Link>
+            <Link to="/" className={`${classes.links} ${pathname === "/Pfrelancer" && "active"}`}>
+            English
+            </Link>
+          {currentUser ? (
+            <>
+              <Link to="/Pfrelancer" className={`${classes.links} ${pathname === "/Pfrelancer" && "active"}`}>
+                  Frelancer
+              </Link>
+              <Link className={`${classes.links} ${pathname === "/login" && "active"}`} onClick={handleLogout}>
+              Logout
+              </Link>
+            </>
+          ):(
+            <div className={classes.navlinks}>
             <Link to="/" className={`${classes.links} ${pathname === "/" && "active"}`}>
               Home
-            </Link>
-            <Link to="/Pfrelancer" className={`${classes.links} ${pathname === "/Pfrelancer" && "active"}`}>
-              Frelancer
             </Link>
             <Link to="/signup" className={classes.login}>
               Sign Up
@@ -102,6 +126,7 @@ function Navbare() {
               Login
             </Link>
           </div>
+          )}
         </Toolbar>
         {(!active ) && (
           <>
